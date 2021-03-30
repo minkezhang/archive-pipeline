@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package pipeline.api.constants;
+option go_package = "pipeline.api.constants";
+
+enum Protocol {
+  PROTOCOL_UNKNOWN = 0;
+  PROTOCOL_SMS = 1;
+}

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package pipeline.api.data;
+option go_package = "pipeline.api.data";
+
+import "api/constants.proto";
+import "google/protobuf/timestamp.proto";
+
+message Address {
+    string address = 1;
+}
+
+message Contact {
+    string id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string nickname = 4;
+    bool is_group = 5;
+
+    repeated Address addresses = 6;
+}
+
+message Transaction {
+    Address source = 1;
+    Address destination = 2;
+    pipeline.api.constants.Protocol protocol = 3;
+    google.protobuf.Timestamp timestamp = 4;
+    oneof data {
+        string text_data = 5;
+    }
+}
