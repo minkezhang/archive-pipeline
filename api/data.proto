@@ -6,23 +6,27 @@ option go_package = "pipeline.api.data";
 import "api/constants.proto";
 import "google/protobuf/timestamp.proto";
 
+message Record {
+    repeated Contact contacts = 1;
+    repeated Transaction transactions = 2;
+}
+
 message Address {
     string address = 1;
 }
 
 message Contact {
-    string id = 1;
-    string first_name = 2;
-    string last_name = 3;
-    string nickname = 4;
-    bool is_group = 5;
+    string first_name = 1;
+    string last_name = 2;
+    string nickname = 3;
+    bool is_group = 4;
 
-    repeated Address addresses = 6;
+    repeated Address addresses = 5;
 }
 
 message Transaction {
     Address source = 1;
-    Address destination = 2;
+    repeated Address participants = 2;
     pipeline.api.constants.Protocol protocol = 3;
     google.protobuf.Timestamp timestamp = 4;
     oneof data {
