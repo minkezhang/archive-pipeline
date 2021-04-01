@@ -8,7 +8,9 @@ import (
 	"path"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/minkezhang/archive-pipeline/import/googlevoice"
+	"github.com/minkezhang/archive-pipeline/import/googlevoice/importer"
+	"github.com/minkezhang/archive-pipeline/import/interfaces"
+	"github.com/minkezhang/archive-pipeline/import/record"
 )
 
 func main() {
@@ -26,14 +28,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	gv := googlevoice.New(files)
-	r, err := gv.Import()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	importers := []interfaces.I{
+		importer.New(files),
 	}
 
-	if err := os.WriteFile("/tmp/record.textproto", []byte(proto.MarshalTextString(r)), 0644); err != nil {
+	r := record.New(nil, nil)
+	for _, i := range importers {
+		if rec, err := i.Import(); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		} else {
+			r.Merge(rec)
+		}
+	}
+
+	if err := os.WriteFile("/tmp/record.textproto", []byte(proto.MarshalTextString(r.Export())), 0644); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

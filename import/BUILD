@@ -1,13 +1,32 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 
+package(default_visibility=["//visibility:public"])
+
 go_library(
-    name = "googlevoice",
-    srcs = ["googlevoice.go"],
-    importpath = "github.com/minkezhang/archive-pipeline/import/googlevoice",
+    name = "contact",
+    srcs = ["contact.go"],
+    importpath = "github.com/minkezhang/archive-pipeline/import/contact",
     deps = [
-        "//api:constants_go_proto",
         "//api:data_go_proto",
-	"@org_golang_google_protobuf//types/known/timestamppb:go_default_library",
+    ],
+)
+
+go_library(
+    name = "record",
+    srcs = ["record.go"],
+    importpath = "github.com/minkezhang/archive-pipeline/import/record",
+    deps = [
+        ":contact",
+        "//api:data_go_proto",
+    ],
+)
+
+go_library(
+    name = "interfaces",
+    srcs = ["interfaces.go"],
+    importpath = "github.com/minkezhang/archive-pipeline/import/interfaces",
+    deps = [
+        ":record",
     ],
 )
 
@@ -19,7 +38,9 @@ go_binary(
         "//data:data",
     ],
     deps = [
-        ":googlevoice",
+        ":interfaces",
+        ":record",
+        "//import/googlevoice:importer",
         "@com_github_golang_protobuf//proto:go_default_library",
     ],
 )
